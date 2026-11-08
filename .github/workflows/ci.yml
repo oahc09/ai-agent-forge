@@ -1,0 +1,42 @@
+name: M0 offline verification
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Prepare failure evidence
+        run: mkdir -p artifacts/ci
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.22.1
+      - name: Install pinned pnpm
+        run: |
+          set -o pipefail
+          npm install --global pnpm@11.25.0 2>&1 | tee artifacts/ci/pnpm-install.log
+      - name: Install dependencies
+        run: |
+          set -o pipefail
+          pnpm install --frozen-lockfile --ignore-scripts 2>&1 | tee artifacts/ci/dependencies.log
+      - run: pnpm verify
+      - name: Record job outcome even when setup fails
+        if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          mkdir -p artifacts/ci
+          printf '{"status":"%s","commit":"%s","productClaim":"NOT_VERIFIED"}\n' "$JOB_STATUS" "$COMMIT_SHA" > artifacts/ci/job.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: m0-verification
+          path: artifacts/
+          if-no-files-found: error

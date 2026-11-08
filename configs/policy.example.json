@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "observeOnly": true,
+  "repository": "https://github.com/oahc09/ai-agent-forge",
+  "provider": "fake",
+  "budgetUsd": 0,
+  "networkDomains": [],
+  "remoteWrite": false,
+  "merge": false,
+  "deploy": false,
+  "maxAttempts": 3,
+  "maxEventHops": 8,
+  "maxConcurrentWorkers": 1
+}
