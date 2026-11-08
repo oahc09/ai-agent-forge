@@ -6,280 +6,291 @@
       "id": "M0-01",
       "milestone": "M0",
       "description": "仓库与环境取证：检查现有 Git 状态、依赖和文件；确定 Node/pnpm 版本、源码托管策略、默认主干与分支约定。交付 `docs/adr/0001-stack.md`、`docs/sources-lock.md`。**验收**：记录 4 个核心上游项目的精确 SHA/许可证/归档状态；不得对既有仓库执行破坏性初始化。",
-      "status": "NOT_VERIFIED",
-      "dependsOnGate": null
+      "status": "完成",
+      "dependsOnGate": null,
+      "verificationEvidence": "https://github.com/oahc09/ai-agent-forge/actions/runs/42460557744"
     },
     {
       "id": "M0-02",
       "milestone": "M0",
       "description": "创建 TypeScript Monorepo、strict 类型和基础命令。**验收**：干净环境 `pnpm install --frozen-lockfile && pnpm lint && pnpm typecheck && pnpm test && pnpm build` 全通过；锁文件入库。",
-      "status": "NOT_VERIFIED",
-      "dependsOnGate": null
+      "status": "完成",
+      "dependsOnGate": null,
+      "verificationEvidence": "https://github.com/oahc09/ai-agent-forge/actions/runs/42460557744"
     },
     {
       "id": "M0-03",
       "milestone": "M0",
       "description": "建立权限威胁模型与运行配置 Schema。**验收**：默认 observe-only；无凭据时不调用模型；20 个非法配置样例均拒绝；文档记录权限矩阵。",
-      "status": "NOT_VERIFIED",
-      "dependsOnGate": null
+      "status": "完成",
+      "dependsOnGate": null,
+      "verificationEvidence": "https://github.com/oahc09/ai-agent-forge/actions/runs/42460557744"
     },
     {
       "id": "M0-04",
       "milestone": "M0",
       "description": "建立 CI、测试 Fixture 与证据报告框架。**验收**：每次 CI 包含 lint/typecheck/unit/security-smoke；失败给出可下载报告；不因缺少商用模型 Token 而阻塞离线测试。",
-      "status": "NOT_VERIFIED",
-      "dependsOnGate": null
+      "status": "完成",
+      "dependsOnGate": null,
+      "verificationEvidence": "https://github.com/oahc09/ai-agent-forge/actions/runs/42460557744"
     },
     {
       "id": "M1-01",
       "milestone": "M1",
       "description": "Domain Event & FSM：实现事件 JSON Schema、状态转移、不可变事件与错误分类。**验收**：未授权/非法状态转移 100% 被拒；同一事件重复提交无额外状态变化；事件顺序可重放。",
-      "status": "NOT_VERIFIED",
-      "dependsOnGate": "G0"
+      "status": "完成",
+      "dependsOnGate": "G0",
+      "verificationEvidence": "https://github.com/oahc09/ai-agent-forge/actions/runs/42460557744"
     },
     {
       "id": "M1-02",
       "milestone": "M1",
       "description": "SQLite Event Store：WAL、事务性落盘、Projection、Migration、快照与 Replay。**验收**：含 10,000 事件的确定性重放，状态与原版相同；中断注入后无半提交事件。",
-      "status": "NOT_VERIFIED",
-      "dependsOnGate": "G0"
+      "status": "完成",
+      "dependsOnGate": "G0",
+      "verificationEvidence": "https://github.com/oahc09/ai-agent-forge/actions/runs/42460557744"
     },
     {
       "id": "M1-03",
       "milestone": "M1",
       "description": "Scheduler：队列、依赖 DAG、任务 Lease、Heartbeat、TTL、幂等键、预算、熔断。**验收**：50 次进程崩溃/恢复场景无丢单；重复触发 100 次仅启动 1 个有效任务；超预算无新外部调用。",
-      "status": "NOT_VERIFIED",
-      "dependsOnGate": "G0"
+      "status": "完成",
+      "dependsOnGate": "G0",
+      "verificationEvidence": "https://github.com/oahc09/ai-agent-forge/actions/runs/42460557744"
     },
     {
       "id": "M1-04",
       "milestone": "M1",
       "description": "Approval & Audit CLI：等待决策卡、身份校验、事件审计、暂停/恢复、取消。**验收**：等待审批时模型进程完全退出；拒绝后不继续；`forge tasks why` 可从事件恢复每次原因。",
-      "status": "NOT_VERIFIED",
-      "dependsOnGate": "G0"
+      "status": "完成",
+      "dependsOnGate": "G0",
+      "verificationEvidence": "https://github.com/oahc09/ai-agent-forge/actions/runs/42460557744"
     },
     {
       "id": "M2-01",
       "milestone": "M2",
       "description": "`AgentAdapter` SDK + Fake Adapter。**验收**：覆盖流式输出、取消、超时、失败、重试、上下文缺失与无原生 Resume；契约测试 100% 通过。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G1"
     },
     {
       "id": "M2-02",
       "milestone": "M2",
       "description": "首个真实 CLI/ACP Adapter（推荐 Pi 或 Codex CLI，取决于可用授权）。**验收**：最小文件改动任务成功，正确报告版本/费用/错误/取消；不声称未验证能力。",
-      "status": "NOT_VERIFIED",
-      "dependsOnGate": "G1"
+      "status": "阻塞",
+      "dependsOnGate": "G1",
+      "blocker": "Real provider/executor and budget approval not configured; no calls made."
     },
     {
       "id": "M2-03",
       "milestone": "M2",
       "description": "第二个异构真实 Adapter（例如 OpenCode；不得复用第一适配器壳伪装两套）。**验收**：相同 10 个小任务可切换执行器，结果与证据独立记录；断线/退出可恢复为新 Session + 交接摘要。",
-      "status": "NOT_VERIFIED",
-      "dependsOnGate": "G1"
+      "status": "阻塞",
+      "dependsOnGate": "G1",
+      "blocker": "Real provider/executor and budget approval not configured; no calls made."
     },
     {
       "id": "M2-04",
       "milestone": "M2",
       "description": "Sandbox & Worktree：路径权限、非特权进程、网络白名单、清理与资源限制。**验收**：越界写、symlink 路径穿越、机密读取、未授权联网均被拒；多个 Worker 不共享可写 Worktree。",
-      "status": "NOT_VERIFIED",
-      "dependsOnGate": "G1"
+      "status": "阻塞",
+      "dependsOnGate": "G1",
+      "blocker": "Current environment rejects bubblewrap network namespace setup; no bypass attempted."
     },
     {
       "id": "M2-05",
       "milestone": "M2",
       "description": "Context Broker：`Handoff Capsule`、来源证据和跨 Agent 交接。**验收**：同一任务从 Agent A → B 复用已验证事实；不把推断写成事实；不同仓库任务互不泄漏。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G1"
     },
     {
       "id": "M3-01",
       "milestone": "M3",
       "description": "Intake & Policy：GitHub Issue、CI 失败、人工任务以及定时触发；强制区分可信来源元数据与不可信正文。**验收**：非授权用户/仓库/标签不接单；重复事件只形成一个 Ticket。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G2"
     },
     {
       "id": "M3-02",
       "milestone": "M3",
       "description": "Roadmap DAG / Task Planner：根据优先级、依赖、资源和风险选择下一项。**验收**：有依赖阻塞不执行；任务完成后无需新聊天指令自动排下一项；总并发上限有效。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G2"
     },
     {
       "id": "M3-03",
       "milestone": "M3",
       "description": "实现-验证-反馈闭环：Coder/Reviewer/Validator 分权、自动修复限次。**验收**：错误可复现，最多 3 次尝试；修复失败生成阻塞报告而不无限循环。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G2"
     },
     {
       "id": "M3-04",
       "milestone": "M3",
       "description": "Git Delivery：隔离分支、Commit、候选 PR 包、授权下 PR 创建、远端对账与去重。**验收**：同一任务 100 次重复投递最多 1 个 PR；禁止自动合并默认受保护分支；无授权时仅导出本地草稿。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G2"
     },
     {
       "id": "M3-05",
       "milestone": "M3",
       "description": "自举 E2E `AF-BOOTSTRAP-001`。**验收**：连续完成至少 2 个自身仓库中的已批准低风险开发任务；其中 1 个执行中 Kill 后恢复；没有不授权修改或重复提交。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G2"
     },
     {
       "id": "M3-06",
       "milestone": "M3",
       "description": "多 Agent 优势融合 `packages/fusion`：实现能力探测、任务分类、单体优先、专长链式协同、并行独立 Review、失败接管与融合决策审计；严格复用 M2 Adapter 和 Context Broker。**验收**：离线 20 个覆盖路由、交接、取消、预算、权限与循环接管的断言通过；至少 2 个真实异构执行器完成受控端到端协作，保留 `FusionDecision`；可以执行 `T6` 对照但 **G3 不以此宣称真实融合净收益，需 G8 统计证明**。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G2"
     },
     {
       "id": "M4-01",
       "milestone": "M4",
       "description": "Trigger Router：允许来源、规则、任务价值、风险、成本过滤；Observe/Auto 两种模式。**验收**：100 个模拟 Trigger 中，未授权自动执行成功数为 0；记录每次接/拒理由。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G3"
     },
     {
       "id": "M4-02",
       "milestone": "M4",
       "description": "Project Memory：证据、作用域、TTL、事实/推断、归档/清理与检索。**验收**：跨仓污染测试 0 违规；检索 20 条已索引基准事实至少召回 18 条（指标仅用于本 Fixture）。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G3"
     },
     {
       "id": "M4-03",
       "milestone": "M4",
       "description": "72 小时稳定性 Soak（Fake 自动任务为主；真实模型任务受预算限制）。**验收**：无任务静默丢失、预算越界、无人授权的副作用或审计缺失；任务可 Kill/Restart/Resume。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G3"
     },
     {
       "id": "M4-04",
       "milestone": "M4",
       "description": "自动验收报告、异常摘要与人工升级。**验收**：生成日报/里程碑报告，包含已完成/未验证/失败、证据、费用、下一批任务；非必要消息聚合而非刷屏。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G3"
     },
     {
       "id": "M4-05",
       "milestone": "M4",
       "description": "长周期真实自主研发试点运行器：冻结试点任务池、授权范围、预算/人员干预记录、每天的任务状态和审计摘要；实现中断恢复、独立报告与断续续跑。**阶段验收**：先用可加速时钟的离线 Fixture 验证 30 日窗口、至少 30 个任务、人工提示与审批区分、统计分母、重复任务去重、日报缺失报警；在授权真实环境中可启动 `T8` 试点。**最终验收**：真实连续 30 个自然日、至少 30 个独立真实任务、≥80% 自主通过率仅在 G8 判定，不能用加速时钟或 Fake 代替。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G3"
     },
     {
       "id": "M5-01",
       "milestone": "M5",
       "description": "开源雷达：GitHub 官方 Release/Commit/PR + 指定项目源。**验收**：至少 10 个固定来源，具备首次抓取、增量、重复内容合并、失败重试与引用。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G4"
     },
     {
       "id": "M5-02",
       "milestone": "M5",
       "description": "Gene Schema、许可证/供应链检查。**验收**：10 个不同来源/机制样例完成标准字段；来源不完整、无许可证记录或不满足安全规则的候选不能进入实验。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G4"
     },
     {
       "id": "M5-03",
       "milestone": "M5",
       "description": "机制提取 Agent：将开源变化转化为问题、方法、依赖、适用边界、潜在收益、验证项。**验收**：人工抽查至少 10 个 Gene，无不存在的源码路径或虚构实测数字；无法确认时明确 `unverified`。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G4"
     },
     {
       "id": "M5-04",
       "milestone": "M5",
       "description": "候选隔离环境与 Gene Registry。**验收**：输入包含 Prompt Injection 的源码/README 不能触发网络写、凭据读取或修改可信配置；有版本、审核和撤销接口。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G4"
     },
     {
       "id": "M5-05",
       "milestone": "M5",
       "description": "开源能力迁移流水线：通过源码差异/机制说明识别可移植 Gene，固定上游 Commit 和许可证证据，将合法机制最小集成到 Adapter、Context、Fusion 或 Runtime，并留存 `CapabilityTransferRecord`。**阶段验收**：完成迁移候选提案、差异审计、冲突检测、撤销、隔离回归等自动化 Fixture；至少 1 项在受控真实代码中可独立复核。**最终验收**：G8 要求来自不同上游项目的 ≥3 项真实能力迁移（可为合法重实现），并经独立测试与许可证审查；只写研究报告不计数。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G4"
     },
     {
       "id": "M6-01",
       "milestone": "M6",
       "description": "Goal/Target/Evaluation Program：只允许改 `target.allowedPaths`；定义受信 evaluator。**验收**：候选试图修改测试器/Policy 的 100% 拒绝与隔离。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G5"
     },
     {
       "id": "M6-02",
       "milestone": "M6",
       "description": "Benchmark Harness：基线/候选采用相同模型、任务、预算与环境；统计对比。**验收**：生成原始任务记录、成功率、成本、延迟、样本量、置信区间、回归切片和环境摘要。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G5"
     },
     {
       "id": "M6-03",
       "milestone": "M6",
       "description": "Search Controller：基础 hill-climb + 候选档案（P0），高级 DGM/OpenEvolve 形式的多分支搜索（P2 可扩展）。**验收**：能够生成 5 个候选，保留每次失败/胜出记录，达到预算上限停止。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G5"
     },
     {
       "id": "M6-04",
       "milestone": "M6",
       "description": "Promotion Gate：独立执行、阻止测试作弊、审批、回滚。**验收**：对确定性正向/负向 Fixture 做出正确晋升/拒绝；真实任务未达统计标准时不宣称有效晋升。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G5"
     },
     {
       "id": "M6-05",
       "milestone": "M6",
       "description": "对自身 Router/Context 模块执行首次真实对照实验。**验收**：至少 1 次完整 Baseline→Candidate→Report→Review；无收益也算实验流程完成，但不能算能力提升。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G5"
     },
     {
       "id": "M6-06",
       "milestone": "M6",
       "description": "真实自进化收益验证流水线：在候选冻结前预注册真实任务指标、模型/工具、成对样本、预算、回归切片及统计规则；基线与候选均在独立环境执行，采用隐藏确认集并处理多重比较；留存 `EvolutionClaim`。**阶段验收**：完成至少 1 次 `provider-real` 的 Baseline→Candidate→Independent Evaluation→Claim 流程，能准确输出 `PROVEN_GAIN/NOT_PROVEN/REGRESSION`，不能因未提升修改评价标准。**最终验收**：G8 至少 1 项真实正向改进符合本文件 §10.5 的统计和安全门禁；未达标时 G6 流程可通过但 G8 阻断。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G5"
     },
     {
       "id": "M7-01",
       "milestone": "M7",
       "description": "多仓库策略配置、隔离与迁移。**验收**：至少 2 个受控测试仓库互不泄漏；跨仓授权不继承。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G6"
     },
     {
       "id": "M7-02",
       "milestone": "M7",
       "description": "真实软件工程 Benchmark：包括 Agent Forge 自身与一个外部图形引擎类项目，明确测试数据来源。**验收**：固定至少 30 个真实工程任务 + 20 个隐藏/独立验收任务，避免因训练/历史任务泄漏而错误提分。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G6"
     },
     {
       "id": "M7-03",
       "milestone": "M7",
       "description": "运维手册与发布包：启动、升级、回滚、备份恢复、权限审计、成本统计、事故处理。**验收**：全新环境按 Runbook 可复现部署；演练一次 DB 恢复与一次候选版本回滚。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G6"
     },
     {
       "id": "M7-04",
       "milestone": "M7",
       "description": "Release Candidate 评审。**验收**：所有 P0/P1 关键 Gate、E2E、安全扫描与文档齐全；未完成项公开列出，未通过不标记 GA。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G6"
     },
     {
       "id": "M7-05",
       "milestone": "M7",
       "description": "自主研发 × 能力迁移 × 自进化联合 E2E：选择一个可信开源变化或真实内部缺陷，完成 `Radar/Intake → Ticket → Planning → 多 Agent 实现 → Sandbox/Validator/Review → Candidate PR → Evolution Experiment → Policy-gated Promotion/Reject → 监控/回滚`；保存全链路 Trace 与证据。**验收**：同时跑通批准/拒绝/故障恢复 3 条路径；无权限升级、评分器篡改或稳定内核热替换；至少一次在真实授权运行环境重放；准备好 G8 30 日试点 Runbook，不能用候选 PR 代替真实 Merge 记录。",
-      "status": "NOT_VERIFIED",
+      "status": "未验证",
       "dependsOnGate": "G6"
     }
   ]

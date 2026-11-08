@@ -28,9 +28,15 @@ importers:
 
   apps/daemon: {}
 
+  packages/adapters: {}
+
+  packages/context: {}
+
   packages/domain: {}
 
   packages/event-store: {}
+
+  packages/execution: {}
 
   packages/observability: {}
 
