@@ -30,17 +30,27 @@ importers:
 
   packages/adapters: {}
 
+  packages/autodev: {}
+
   packages/context: {}
 
   packages/domain: {}
 
   packages/event-store: {}
 
+  packages/evolution: {}
+
   packages/execution: {}
+
+  packages/fusion: {}
 
   packages/observability: {}
 
+  packages/operations: {}
+
   packages/policy: {}
+
+  packages/radar: {}
 
   packages/scheduler: {}
 

@@ -2,7 +2,7 @@ import {spawnSync,execFileSync} from 'node:child_process';
 import {mkdirSync,writeFileSync,readFileSync,copyFileSync} from 'node:fs';
 import {randomUUID} from 'node:crypto';
 import {createReport,sha256,writeReportExclusive} from '../packages/observability/src/index.ts';
-const milestone=process.argv[2]??'M2';if(!['M0','M1','M2'].includes(milestone))throw new Error('Supported verification milestones: M0, M1, M2 (offline tasks only)');
+const milestone=process.argv[2]??'PREVIEW';if(!['M0','M1','M2','PREVIEW'].includes(milestone))throw new Error('Supported verification milestones: M0, M1, M2, PREVIEW (offline tasks only)');
 const runId=randomUUID(); const dir=`artifacts/${milestone}/${runId}`; mkdirSync(dir,{recursive:true});
 const checks=[]; const artifactHashes={}; const tests=[];
 function save(name,value){const bytes=typeof value==='string'?value:JSON.stringify(value,null,2)+'\n';writeFileSync(`${dir}/${name}`,bytes);artifactHashes[name]=sha256(bytes);}
@@ -20,13 +20,13 @@ save('tests.json',tests);
 save('policy.json',{scope:`${milestone} offline implementation verification only`,remoteActions:[],modelCalls:0,merged:false,deployed:false,authority:'User requested development and submission to oahc09/ai-agent-forge; active product grants remain disabled'});
 save('cost.json',{modelCalls:0,providerChargesUsd:0,source:'Verification scripts invoke no model provider; assistant development service costs are not measured here'});
 save('plan.md',`Verify ${milestone}: lint, strict types, full offline unit/security/CLI/fault-injection suite and build. No real-provider or product autonomy claim.\n`);
-save('review.md','Independent review is required for completion. See docs/m2-independent-review.md, docs/m1-independent-review.md and docs/m0-independent-review.md. This generated report does not impersonate a reviewer or approve later Gates.\n');
-save('report.md',`# ${milestone} offline verification\n\nCommit: ${evaluatedCommit}\nDirty: ${environment.dirty}\nAutomated checks: ${checks.every(c=>c.passed)?'PASS':'FAIL'}\nHuman G0 baseline review: approved by user\nG1: independently reviewed and CI passed\nG2–G8: NOT_VERIFIED\nReproduce: pnpm install --frozen-lockfile && pnpm verify\n`);
-const tasks=JSON.parse(readFileSync('backlog.json','utf8')).tasks.filter(t=>t.milestone===milestone&&(milestone!=='M2'||['M2-01','M2-05'].includes(t.id)));
+save('review.md','Independent review is required for completion. See docs/host-preview-independent-review.md, docs/m2-independent-review.md, docs/m1-independent-review.md and docs/m0-independent-review.md. This generated report does not impersonate a reviewer or approve later Gates.\n');
+save('report.md',`# ${milestone} offline verification\n\nCommit: ${evaluatedCommit}\nDirty: ${environment.dirty}\nAutomated checks: ${checks.every(c=>c.passed)?'PASS':'FAIL'}\nHuman G0 baseline review: approved by user\nG1: independently reviewed and CI passed\nG2–G8: NOT_VERIFIED\nReproduce: pnpm install --frozen-lockfile && pnpm verify ${milestone}\n`);
+const tasks=JSON.parse(readFileSync('backlog.json','utf8')).tasks.filter(t=>milestone==='PREVIEW'?t.previewImplemented===true:t.milestone===milestone&&(milestone!=='M2'||['M2-01','M2-05'].includes(t.id)));
 for(const task of tasks){
  const taskDir=`artifacts/${task.id}/${runId}`;mkdirSync(taskDir,{recursive:true});
  const hashes={...artifactHashes}; for(const name of Object.keys(hashes))copyFileSync(`${dir}/${name}`,`${taskDir}/${name}`);
- const taskBytes=JSON.stringify({...task,status:'NOT_VERIFIED',automatedChecks:checks.every(c=>c.passed)?'PASS':'FAIL',remaining:['Independent review for this exact commit']},null,2)+'\n';writeFileSync(`${taskDir}/task.json`,taskBytes);hashes['task.json']=sha256(taskBytes);
+ const taskBytes=JSON.stringify({...task,status:'NOT_VERIFIED',automatedChecks:checks.every(c=>c.passed)?'PASS':'FAIL',remaining:milestone==='PREVIEW'?['Original milestone acceptance remains NOT_VERIFIED','No real-provider, OS-isolation, autonomy or G8 claim','Independent review for this exact commit']:['Independent review for this exact commit']},null,2)+'\n';writeFileSync(`${taskDir}/task.json`,taskBytes);hashes['task.json']=sha256(taskBytes);
  writeReportExclusive(`${taskDir}/report.json`,createReport({runId,taskId:task.id,evaluatedCommit,benchmarkVersion:`T0-T1-${milestone.toLowerCase()}-v1`,environmentDigest:artifactHashes['environment.json'],checks,artifactHashes:hashes}));
 }
 save('task.json',{taskId:milestone,scope:tasks.map(t=>t.id),status:'NOT_VERIFIED'});

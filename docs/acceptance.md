@@ -3,7 +3,7 @@
 The v1.1 plan is authoritative. No threshold was lowered.
 
 M0-01: stack/repository/source baseline recorded. GitHub Next upstream has no identified
-license; copying forbidden. Human source/technical review remains pending.
+license; copying forbidden. The user approved the baseline technical review at G0.
 M0-02: strict workspace, frozen lock and lint/typecheck/test/build commands implemented.
 M0-03: bootstrap schema and exact-key validation, ≥20 invalid configuration cases, safe defaults.
 M0-04: offline fixtures, non-overwriting hashed reports, always-upload CI evidence.
@@ -23,8 +23,7 @@ evolution acceptance is claimed. No 72-hour/30-day run has been started.
 - Inspect independent test/review evidence and CI for the exact commit.
 - Explicitly approve beginning M1; this does not authorize paid providers, merges or deployment.
 
-Next authorized work after review: M1-01 domain schema and state transitions, then SQLite
-transaction/replay, scheduler fault injection and authenticated approval handling.
+M1 was subsequently implemented and verified. See its evidence mapping below.
 
 ## M1 evidence mapping
 
@@ -40,5 +39,12 @@ offline runtime gate only; G2 requires actual sandbox and two authorized real ad
 
 SDK/Fake and Context Broker are offline contracts only. G2 cannot pass without two
 authorized real executors and actual sandbox acceptance. See m2-blockers.md for the
-observed namespace failure and missing real provider/budget authorization. No M3 work
-is unlocked by passing offline contract tests.
+observed namespace failure and missing real provider/budget authorization. Offline contract tests do not unlock original G3. The user subsequently approved
+a prospective host-assisted preview track, not a waiver of original acceptance.
+
+## User-approved host-assisted preview track
+
+M3+ implementation may proceed in the current environment with native coding/review
+assistance. See host-assisted-preview.md for per-package scope and limitations.
+Original G2 remains blocked; G3–G7 and G8 remain NOT_VERIFIED. No real trial, gain,
+source transfer, provider autonomy, OS sandbox or release is inferred from fixtures.

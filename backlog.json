@@ -108,29 +108,41 @@
       "id": "M3-01",
       "milestone": "M3",
       "description": "Intake & Policy：GitHub Issue、CI 失败、人工任务以及定时触发；强制区分可信来源元数据与不可信正文。**验收**：非授权用户/仓库/标签不接单；重复事件只形成一个 Ticket。",
-      "status": "未验证",
-      "dependsOnGate": "G2"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G2",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M3-02",
       "milestone": "M3",
       "description": "Roadmap DAG / Task Planner：根据优先级、依赖、资源和风险选择下一项。**验收**：有依赖阻塞不执行；任务完成后无需新聊天指令自动排下一项；总并发上限有效。",
-      "status": "未验证",
-      "dependsOnGate": "G2"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G2",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M3-03",
       "milestone": "M3",
       "description": "实现-验证-反馈闭环：Coder/Reviewer/Validator 分权、自动修复限次。**验收**：错误可复现，最多 3 次尝试；修复失败生成阻塞报告而不无限循环。",
-      "status": "未验证",
-      "dependsOnGate": "G2"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G2",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M3-04",
       "milestone": "M3",
       "description": "Git Delivery：隔离分支、Commit、候选 PR 包、授权下 PR 创建、远端对账与去重。**验收**：同一任务 100 次重复投递最多 1 个 PR；禁止自动合并默认受保护分支；无授权时仅导出本地草稿。",
-      "status": "未验证",
-      "dependsOnGate": "G2"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G2",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M3-05",
@@ -143,22 +155,31 @@
       "id": "M3-06",
       "milestone": "M3",
       "description": "多 Agent 优势融合 `packages/fusion`：实现能力探测、任务分类、单体优先、专长链式协同、并行独立 Review、失败接管与融合决策审计；严格复用 M2 Adapter 和 Context Broker。**验收**：离线 20 个覆盖路由、交接、取消、预算、权限与循环接管的断言通过；至少 2 个真实异构执行器完成受控端到端协作，保留 `FusionDecision`；可以执行 `T6` 对照但 **G3 不以此宣称真实融合净收益，需 G8 统计证明**。",
-      "status": "未验证",
-      "dependsOnGate": "G2"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G2",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M4-01",
       "milestone": "M4",
       "description": "Trigger Router：允许来源、规则、任务价值、风险、成本过滤；Observe/Auto 两种模式。**验收**：100 个模拟 Trigger 中，未授权自动执行成功数为 0；记录每次接/拒理由。",
-      "status": "未验证",
-      "dependsOnGate": "G3"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G3",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M4-02",
       "milestone": "M4",
       "description": "Project Memory：证据、作用域、TTL、事实/推断、归档/清理与检索。**验收**：跨仓污染测试 0 违规；检索 20 条已索引基准事实至少召回 18 条（指标仅用于本 Fixture）。",
-      "status": "未验证",
-      "dependsOnGate": "G3"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G3",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M4-03",
@@ -171,78 +192,111 @@
       "id": "M4-04",
       "milestone": "M4",
       "description": "自动验收报告、异常摘要与人工升级。**验收**：生成日报/里程碑报告，包含已完成/未验证/失败、证据、费用、下一批任务；非必要消息聚合而非刷屏。",
-      "status": "未验证",
-      "dependsOnGate": "G3"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G3",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M4-05",
       "milestone": "M4",
       "description": "长周期真实自主研发试点运行器：冻结试点任务池、授权范围、预算/人员干预记录、每天的任务状态和审计摘要；实现中断恢复、独立报告与断续续跑。**阶段验收**：先用可加速时钟的离线 Fixture 验证 30 日窗口、至少 30 个任务、人工提示与审批区分、统计分母、重复任务去重、日报缺失报警；在授权真实环境中可启动 `T8` 试点。**最终验收**：真实连续 30 个自然日、至少 30 个独立真实任务、≥80% 自主通过率仅在 G8 判定，不能用加速时钟或 Fake 代替。",
-      "status": "未验证",
-      "dependsOnGate": "G3"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G3",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M5-01",
       "milestone": "M5",
       "description": "开源雷达：GitHub 官方 Release/Commit/PR + 指定项目源。**验收**：至少 10 个固定来源，具备首次抓取、增量、重复内容合并、失败重试与引用。",
-      "status": "未验证",
-      "dependsOnGate": "G4"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G4",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M5-02",
       "milestone": "M5",
       "description": "Gene Schema、许可证/供应链检查。**验收**：10 个不同来源/机制样例完成标准字段；来源不完整、无许可证记录或不满足安全规则的候选不能进入实验。",
-      "status": "未验证",
-      "dependsOnGate": "G4"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G4",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M5-03",
       "milestone": "M5",
       "description": "机制提取 Agent：将开源变化转化为问题、方法、依赖、适用边界、潜在收益、验证项。**验收**：人工抽查至少 10 个 Gene，无不存在的源码路径或虚构实测数字；无法确认时明确 `unverified`。",
-      "status": "未验证",
-      "dependsOnGate": "G4"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G4",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M5-04",
       "milestone": "M5",
       "description": "候选隔离环境与 Gene Registry。**验收**：输入包含 Prompt Injection 的源码/README 不能触发网络写、凭据读取或修改可信配置；有版本、审核和撤销接口。",
-      "status": "未验证",
-      "dependsOnGate": "G4"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G4",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M5-05",
       "milestone": "M5",
       "description": "开源能力迁移流水线：通过源码差异/机制说明识别可移植 Gene，固定上游 Commit 和许可证证据，将合法机制最小集成到 Adapter、Context、Fusion 或 Runtime，并留存 `CapabilityTransferRecord`。**阶段验收**：完成迁移候选提案、差异审计、冲突检测、撤销、隔离回归等自动化 Fixture；至少 1 项在受控真实代码中可独立复核。**最终验收**：G8 要求来自不同上游项目的 ≥3 项真实能力迁移（可为合法重实现），并经独立测试与许可证审查；只写研究报告不计数。",
-      "status": "未验证",
-      "dependsOnGate": "G4"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G4",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M6-01",
       "milestone": "M6",
       "description": "Goal/Target/Evaluation Program：只允许改 `target.allowedPaths`；定义受信 evaluator。**验收**：候选试图修改测试器/Policy 的 100% 拒绝与隔离。",
-      "status": "未验证",
-      "dependsOnGate": "G5"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G5",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M6-02",
       "milestone": "M6",
       "description": "Benchmark Harness：基线/候选采用相同模型、任务、预算与环境；统计对比。**验收**：生成原始任务记录、成功率、成本、延迟、样本量、置信区间、回归切片和环境摘要。",
-      "status": "未验证",
-      "dependsOnGate": "G5"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G5",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M6-03",
       "milestone": "M6",
       "description": "Search Controller：基础 hill-climb + 候选档案（P0），高级 DGM/OpenEvolve 形式的多分支搜索（P2 可扩展）。**验收**：能够生成 5 个候选，保留每次失败/胜出记录，达到预算上限停止。",
-      "status": "未验证",
-      "dependsOnGate": "G5"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G5",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M6-04",
       "milestone": "M6",
       "description": "Promotion Gate：独立执行、阻止测试作弊、审批、回滚。**验收**：对确定性正向/负向 Fixture 做出正确晋升/拒绝；真实任务未达统计标准时不宣称有效晋升。",
-      "status": "未验证",
-      "dependsOnGate": "G5"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G5",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M6-05",
@@ -255,8 +309,11 @@
       "id": "M6-06",
       "milestone": "M6",
       "description": "真实自进化收益验证流水线：在候选冻结前预注册真实任务指标、模型/工具、成对样本、预算、回归切片及统计规则；基线与候选均在独立环境执行，采用隐藏确认集并处理多重比较；留存 `EvolutionClaim`。**阶段验收**：完成至少 1 次 `provider-real` 的 Baseline→Candidate→Independent Evaluation→Claim 流程，能准确输出 `PROVEN_GAIN/NOT_PROVEN/REGRESSION`，不能因未提升修改评价标准。**最终验收**：G8 至少 1 项真实正向改进符合本文件 §10.5 的统计和安全门禁；未达标时 G6 流程可通过但 G8 阻断。",
-      "status": "未验证",
-      "dependsOnGate": "G5"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G5",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M7-01",
@@ -276,8 +333,11 @@
       "id": "M7-03",
       "milestone": "M7",
       "description": "运维手册与发布包：启动、升级、回滚、备份恢复、权限审计、成本统计、事故处理。**验收**：全新环境按 Runbook 可复现部署；演练一次 DB 恢复与一次候选版本回滚。",
-      "status": "未验证",
-      "dependsOnGate": "G6"
+      "status": "部分实现（宿主辅助预览；原验收未通过）",
+      "dependsOnGate": "G6",
+      "previewImplemented": true,
+      "previewScope": "Offline trusted-host library/fixture only; see docs/host-assisted-preview.md",
+      "verificationEvidence": "Run pnpm verify PREVIEW; original Gate remains NOT_VERIFIED"
     },
     {
       "id": "M7-04",
@@ -293,5 +353,12 @@
       "status": "未验证",
       "dependsOnGate": "G6"
     }
-  ]
+  ],
+  "hostAssistedPreview": {
+    "authorized": "2026-11-08",
+    "originalGatesUnchanged": true,
+    "G2": "BLOCKED",
+    "G8": "NOT_VERIFIED",
+    "scope": "Prospective implementation and offline validation only"
+  }
 }
