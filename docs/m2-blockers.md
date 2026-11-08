@@ -37,3 +37,12 @@ G2 is blocked, and M3–M7 remain dependency-blocked. G8 remains NOT_VERIFIED; n
 72-hour soak,30-day campaign,paid model trial or remote autonomous development has started.
 Neither an SDK contract nor generated Fake output can satisfy the two real adapter or
 sandbox tests. Do not substitute a mocked sandbox or duplicate adapter shell to pass G2.
+
+## User-selected current-environment alternative
+
+The user subsequently requested native subagents in the current environment. A bounded
+real coding task and separate read-only review were completed in that mode; see
+[native-agent qualification](native-subagent-qualification.md). Native roles are usable
+for development assistance but do not supply a standalone daemon transport, heterogeneous
+executor evidence, or the denied OS isolation. Original G2 remains NOT_PASSED; no new
+provider expense, environment transfer or acceptance-threshold change is inferred.
