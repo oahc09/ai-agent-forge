@@ -26,9 +26,17 @@ importers:
 
   apps/cli: {}
 
+  apps/daemon: {}
+
+  packages/domain: {}
+
+  packages/event-store: {}
+
   packages/observability: {}
 
   packages/policy: {}
+
+  packages/scheduler: {}
 
 packages:
 
