@@ -25,3 +25,11 @@ its reservation while its iterator retains the cancelled state.
 Capabilities truthfully report streaming/cancellation and summary handoff, with
 `resume: false` and `toolCalls: false`. This fake does not claim native resume,
 actual agent execution, OS sandbox enforcement, or G2 passage.
+
+## Provider protocol groundwork
+
+CodexJsonlDecoder and OpenCodeJsonlDecoder implement distinct JSONL lifecycle and
+usage translations into SDK events. They do not launch either provider or implement
+runnable AgentAdapters. They require trusted process-exit evidence before success;
+OpenCode step_finish alone never completes a run. See
+[protocol contracts and remaining work](../../docs/provider-protocol-adapters.md).

@@ -79,7 +79,8 @@
       "description": "首个真实 CLI/ACP Adapter（推荐 Pi 或 Codex CLI，取决于可用授权）。**验收**：最小文件改动任务成功，正确报告版本/费用/错误/取消；不声称未验证能力。",
       "status": "阻塞",
       "dependsOnGate": "G1",
-      "blocker": "Real provider/executor and budget approval not configured; no calls made."
+      "blocker": "Trusted isolated process runner and two real adapter integrations remain unimplemented; provider/executor, model and budget authorization not configured; real ten-task E2E not run.",
+      "partialImplementation": "Distinct provider JSONL lifecycle/usage decoding with offline contracts; no runnable real AgentAdapter, provider call or G2 acceptance. See docs/provider-protocol-adapters.md."
     },
     {
       "id": "M2-03",
@@ -87,7 +88,8 @@
       "description": "第二个异构真实 Adapter（例如 OpenCode；不得复用第一适配器壳伪装两套）。**验收**：相同 10 个小任务可切换执行器，结果与证据独立记录；断线/退出可恢复为新 Session + 交接摘要。",
       "status": "阻塞",
       "dependsOnGate": "G1",
-      "blocker": "Real provider/executor and budget approval not configured; no calls made."
+      "blocker": "Trusted isolated process runner and two real adapter integrations remain unimplemented; provider/executor, model and budget authorization not configured; real ten-task E2E not run.",
+      "partialImplementation": "Distinct provider JSONL lifecycle/usage decoding with offline contracts; no runnable real AgentAdapter, provider call or G2 acceptance. See docs/provider-protocol-adapters.md."
     },
     {
       "id": "M2-04",
