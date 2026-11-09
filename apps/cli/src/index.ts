@@ -2,6 +2,7 @@
 import {readFileSync,writeFileSync} from 'node:fs';
 import {defaultPolicy,parsePolicy} from '../../../packages/policy/src/index.ts';
 import {makeTask} from '../../../packages/domain/src/index.ts';
+import {readinessReport} from './readiness.ts';
 import {openLocalRuntime} from './local-runtime.ts';
 import {runFake,type FakeMode} from '../../daemon/src/runtime.ts';
 export async function main(input:string[]):Promise<object>{
@@ -9,6 +10,10 @@ export async function main(input:string[]):Promise<object>{
  const stateIndex=args.indexOf('--state-dir');let state='.forge';
  if(stateIndex>=0){const path=args[stateIndex+1];if(!path||path.startsWith('--'))throw new Error('--state-dir requires directory');state=path;args.splice(stateIndex,2);}
  const [command,sub,id]=args;
+ if(command==='doctor'&&args.includes('--readiness')){
+  if(args.length!==2||sub!=='--readiness')throw new Error('Use doctor --readiness without policy or other arguments');
+  return readinessReport();
+ }
  // M0 compatibility: init/doctor <policy.json> remain config-only, no model or network.
  if(command==='init'&&sub){writeFileSync(sub,JSON.stringify(defaultPolicy(),null,2)+'\n',{flag:'wx',mode:0o600});return {initialized:sub,observeOnly:true,phase:'M0'};}
  if(command==='doctor'&&sub){const policy=parsePolicy(JSON.parse(readFileSync(sub,'utf8')) as unknown);return {configurationValid:true,policy,runtimeReady:false,missing:['M2 sandbox and real adapters'],gate:'NOT_VERIFIED'};}

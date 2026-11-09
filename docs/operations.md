@@ -45,3 +45,22 @@ There is no CLI capable of raising permissions, changing runtime budgets or merg
 Backup/restore automation is M7 and not claimed here. For investigation stop the daemon
 and preserve the state directory including SQLite WAL/SHM files; never copy only an active
 DB file or delete evidence to make a test pass.
+
+## Read-only readiness diagnosis
+
+`pnpm forge doctor --readiness --json` works before `init` and does not open or
+create a state database. It inventories codex/opencode/pi/bwrap using filesystem
+metadata in absolute PATH directories only. It does not execute even `--version`,
+read credentials, contact providers or probe isolation. PRESENT means only that
+an executable file was found, not that it is trusted, configured or usable.
+UNKNOWN means metadata/access could not be checked reliably; NOT_FOUND is limited
+to the inspected PATH. Paths and environment contents are not included in output.
+
+The result always retains productionReady=false and G2=NOT_VERIFIED. It lists
+separate implementation, authorization, isolation and real-evidence prerequisites.
+This is an actionable inventory, not a gate validator or an authorization source.
+The prior sandbox denial in docs/m2-blockers.md remains historical evidence; the
+command does not retry it or claim it describes every future machine. Do not
+substitute two native host roles or installed binaries for real adapters. Native
+host-service cost remains unmeasured, never assumed zero. Other doctor forms and
+the fixed offline runtime are unchanged.
