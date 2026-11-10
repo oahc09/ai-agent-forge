@@ -80,7 +80,7 @@
       "status": "阻塞",
       "dependsOnGate": "G1",
       "blocker": "Trusted isolated process runner and two real adapter integrations remain unimplemented; provider/executor, model and budget authorization not configured; real ten-task E2E not run.",
-      "partialImplementation": "Distinct provider JSONL lifecycle/usage decoding with offline contracts; no runnable real AgentAdapter, provider call or G2 acceptance. See docs/provider-protocol-adapters.md."
+      "partialImplementation": "Distinct provider JSONL decoding plus SDK lifecycle and actual owned-process transport rehearsals; no real provider launcher or G2 acceptance. See docs/provider-protocol-adapters.md and docs/offline-process-adapters.md."
     },
     {
       "id": "M2-03",
@@ -89,7 +89,7 @@
       "status": "阻塞",
       "dependsOnGate": "G1",
       "blocker": "Trusted isolated process runner and two real adapter integrations remain unimplemented; provider/executor, model and budget authorization not configured; real ten-task E2E not run.",
-      "partialImplementation": "Distinct provider JSONL lifecycle/usage decoding with offline contracts; no runnable real AgentAdapter, provider call or G2 acceptance. See docs/provider-protocol-adapters.md."
+      "partialImplementation": "Distinct provider JSONL decoding plus SDK lifecycle and actual owned-process transport rehearsals; no real provider launcher or G2 acceptance. See docs/provider-protocol-adapters.md and docs/offline-process-adapters.md."
     },
     {
       "id": "M2-04",

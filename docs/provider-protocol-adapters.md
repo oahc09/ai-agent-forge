@@ -78,3 +78,9 @@ budgets, establish model identity or prove all underlying calls were accounted f
 Tests: `pnpm exec vitest run tests/unit/provider-protocols.test.ts` followed by
 normal full lint/typecheck/test/security/build checks. Tests validate protocol
 contracts only and do not enable the runtime to use these providers.
+
+## Subsequent transport rehearsal
+
+A separate owned-process fixture now exercises framing, lifecycle, cancellation
+and reaping with these decoders; see [offline-process-adapters.md](offline-process-adapters.md).
+The missing real-provider runner/isolation requirements above remain unchanged.

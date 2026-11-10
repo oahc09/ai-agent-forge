@@ -100,3 +100,5 @@ export const REAL_ADAPTERS_IMPLEMENTED = false as const;
 export { CodexJsonlDecoder } from './codex-jsonl.ts';
 export { OpenCodeJsonlDecoder } from './opencode-jsonl.ts';
 export type { ReportedUsage } from './jsonl-protocol.ts';
+export { CodexFixtureProcessAdapter, OpenCodeFixtureProcessAdapter } from './process-fixture-adapters.ts';
+export type { OfflineRunObservation } from './process-fixture-adapters.ts';

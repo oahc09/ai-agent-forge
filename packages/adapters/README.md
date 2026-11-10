@@ -33,3 +33,11 @@ usage translations into SDK events. They do not launch either provider or implem
 runnable AgentAdapters. They require trusted process-exit evidence before success;
 OpenCode step_finish alone never completes a run. See
 [protocol contracts and remaining work](../../docs/provider-protocol-adapters.md).
+
+## Actual subprocess rehearsal
+
+CodexFixtureProcessAdapter and OpenCodeFixtureProcessAdapter now exercise the SDK
+lifecycle and the distinct protocol decoders against fixed, repository-owned Node
+subprocesses. They refuse real budgets and command/network/write requests. This is
+not a provider launcher or OS sandbox, and it does not change G2. See
+[transport boundaries and verification](../../docs/offline-process-adapters.md).
