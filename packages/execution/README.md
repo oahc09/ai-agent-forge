@@ -34,3 +34,11 @@ host's `ContextBroker` verification path before handing context to real consumer
 - Real adapters, provider cost/version accounting, native resume, persistent
   context storage and enforced sandbox isolation remain unimplemented here.
 - Passing these offline tests is not G2 completion.
+
+## Local Worktree management
+
+Trusted hosts may import LocalWorktreePool from the separate src/worktrees.ts
+module for pinned, distinct local worktree allocation and conservative cleanup.
+It is deliberately not imported by the offline protocol-validator entrypoint.
+It is not an OS sandbox or an authorization source. See
+[boundaries and remaining M2-04 work](../../docs/local-worktree-pool.md).

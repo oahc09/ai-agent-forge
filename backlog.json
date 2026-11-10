@@ -97,7 +97,8 @@
       "description": "Sandbox & Worktree：路径权限、非特权进程、网络白名单、清理与资源限制。**验收**：越界写、symlink 路径穿越、机密读取、未授权联网均被拒；多个 Worker 不共享可写 Worktree。",
       "status": "阻塞",
       "dependsOnGate": "G1",
-      "blocker": "Current environment rejects bubblewrap network namespace setup; no bypass attempted."
+      "blocker": "Current environment rejects bubblewrap network namespace setup; no bypass attempted.",
+      "partialImplementation": "Real local Git worktree allocation with pinned raw blob contents, task/worker separation and non-forced cleanup; trusted-host component only. See docs/local-worktree-pool.md."
     },
     {
       "id": "M2-05",
