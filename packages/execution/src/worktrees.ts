@@ -3,6 +3,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { constants, lstatSync, fstatSync, readSync, readdirSync, realpathSync, mkdirSync, mkdtempSync, openSync, closeSync, writeFileSync, renameSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
+import { CandidateWorkspace } from './candidate-workspace.ts';
 
 export class WorktreeError extends Error {
   constructor(message: string) { super(message); this.name = 'WorktreeError'; }
@@ -62,6 +63,7 @@ export class LocalWorktreePool {
   get root(): string { return this.rootPath; }
   private readonly source: string;
   private readonly metadata: { git: string; common: string };
+  private exports = 0;
   private readonly leases = new Map<string, OwnedLease>();
   constructor(source: string, parent = tmpdir()) {
     this.source = canonicalDirectory(source); this.metadata = gitDirectories(this.source);
@@ -157,12 +159,24 @@ export class LocalWorktreePool {
     }
   }
   inspect(id: string): WorktreeLease | null { return structuredClone(this.leases.get(id)?.lease ?? null); }
-  /** Never force-remove or discard candidate/user changes. An interrupted process
-   * leaves manifests and Git worktree registrations for manual reconciliation. */
-  release(id: string): WorktreeLease {
+  /** Copy a verified pristine lease into fresh regular files without .git or
+   * shared Git metadata. Still requires an independent OS sandbox before execution. */
+  detach(id: string): CandidateWorkspace {
     this.checkRoot();
     const record = this.leases.get(id);
-    check(record && record.lease.state === 'ready', 'Only an owned ready lease can be released');
+    check(record && record.lease.state === 'ready', 'Only an owned ready lease can be detached');
+    check(this.exports < 32, 'Detached workspace history limit reached');
+    this.assertPristine(record);
+    const files = record.files.map(file => {
+      const bytes = regular(join(record.lease.directory, file.path), 1048576);
+      check(hash(bytes) === file.sha256, 'Baseline changed during export');
+      return { path: file.path, mode: file.mode, bytes };
+    });
+    this.exports++;
+    return new CandidateWorkspace(this.root, { leaseId: id, taskId: record.lease.taskId,
+      workerId: record.lease.workerId, commit: record.lease.commit }, files);
+  }
+  private assertPristine(record: OwnedLease): void {
     check(canonicalDirectory(record.lease.directory) === record.lease.directory, 'Worktree directory moved');
     check(regular(join(record.lease.directory, '.git'), 4096).toString('utf8') === record.gitMarker, 'Git worktree marker changed');
     check(this.git(['rev-parse', 'HEAD'], record.lease.directory).toString().trim() === record.lease.commit, 'Candidate commits must be preserved');
@@ -185,6 +199,14 @@ export class LocalWorktreePool {
       }
     };
     visit(record.lease.directory); check(files.size === 0, 'Deleted files must be preserved');
+  }
+  /** Never force-remove or discard candidate/user changes. An interrupted process
+   * leaves manifests and Git worktree registrations for manual reconciliation. */
+  release(id: string): WorktreeLease {
+    this.checkRoot();
+    const record = this.leases.get(id);
+    check(record && record.lease.state === 'ready', 'Only an owned ready lease can be released');
+    this.assertPristine(record);
     try {
       this.inspectConfiguration(record.lease.directory);
       this.git(['worktree', 'unlock', '--', record.lease.directory]);

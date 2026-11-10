@@ -42,3 +42,9 @@ module for pinned, distinct local worktree allocation and conservative cleanup.
 It is deliberately not imported by the offline protocol-validator entrypoint.
 It is not an OS sandbox or an authorization source. See
 [boundaries and remaining M2-04 work](../../docs/local-worktree-pool.md).
+
+LocalWorktreePool.detach copies a pristine owned lease into regular files without
+Git metadata. The returned CandidateWorkspace inspects added/deleted/modified
+files and mode changes as bounded hash-only metadata. This is an offline transport
+component, not an isolated runner or patch-application authorization. See
+[detached candidate workspaces](../../docs/detached-candidate-workspaces.md).

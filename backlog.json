@@ -98,7 +98,7 @@
       "status": "阻塞",
       "dependsOnGate": "G1",
       "blocker": "Current environment rejects bubblewrap network namespace setup; no bypass attempted.",
-      "partialImplementation": "Real local Git worktree allocation with pinned raw blob contents, task/worker separation and non-forced cleanup; trusted-host component only. See docs/local-worktree-pool.md."
+      "partialImplementation": "Real local Git worktree allocation with pinned raw blob contents, task/worker separation and non-forced cleanup; trusted-host component only. See docs/local-worktree-pool.md.；新增 verified Worktree detach：无 .git/共享元数据的独立普通文件副本，宿主独占检查生成有界哈希差异清单，不执行、应用或上传候选。仍不是 OS 隔离，G2 不变。"
     },
     {
       "id": "M2-05",
