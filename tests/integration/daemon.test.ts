@@ -1,0 +1,15 @@
+import {it,expect} from 'vitest';
+import {mkdtempSync,rmSync,mkdirSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {EventStore} from '../../packages/event-store/src/index.ts';
+import {Scheduler} from '../../packages/scheduler/src/index.ts';
+import {makeTask} from '../../packages/domain/src/index.ts';
+import {runFake} from '../../apps/daemon/src/runtime.ts';
+import {openLocalRuntime} from '../../apps/cli/src/local-runtime.ts';
+const repo='https://github.com/oahc09/ai-agent-forge';
+it('approval waits with no surviving fixture process; deny cannot restart',async()=>{const store=new EventStore(':memory:');const scheduler=new Scheduler(store);try{scheduler.submit(makeTask({id:'approval',title:'approval',repo}),'a','operator');const result=await runFake(scheduler,scheduler.claim()!,'approval');expect(result).toMatchObject({outcome:'WAITING_APPROVAL',closed:true});expect(result.pid).toBeDefined();expect(()=>process.kill(result.pid!,0)).toThrow();expect(store.getTask('approval')?.status).toBe('WAITING_APPROVAL');scheduler.decide(scheduler.approvals()[0]!.id,false,'operator');expect(scheduler.claim()).toBeUndefined();}finally{store.close();}});
+it('timeout kills process, accounts failure, and keeps bounded retries',async()=>{const store=new EventStore(':memory:');const scheduler=new Scheduler(store);try{scheduler.submit(makeTask({id:'timeout',title:'timeout',repo}),'a','operator');const result=await runFake(scheduler,scheduler.claim()!,'hang',undefined,150);expect(result.outcome).toBe('FAILED');expect(()=>process.kill(result.pid!,0)).toThrow();expect(store.getTask('timeout')?.status).toBe('FAILED');}finally{store.close();}});
+it('real CLI initializes private state, adds fixture, dry-runs without claim, completes and audits',()=>{const root=mkdtempSync(join(tmpdir(),'forge-cli-m1-'));const state=join(root,'state');const call=(...args:string[])=>spawnSync(process.execPath,['apps/cli/src/index.ts',...args,'--state-dir',state],{encoding:'utf8',env:{PATH:process.env.PATH}});try{expect(call('init').status).toBe(0);const runtime=openLocalRuntime(state);runtime.scheduler.submit(makeTask({id:'cli',title:'cli',repo}),'a',runtime.operator);runtime.store.close();expect(JSON.parse(call('tasks','run','cli','--dry-run').stdout).willInvoke).toBe(false);expect(JSON.parse(call('tasks','show','cli').stdout).task.attempt).toBe(0);expect(JSON.parse(call('tasks','run','cli').stdout).outcome).toBe('DONE');expect(JSON.parse(call('tasks','why','cli').stdout).events.length).toBeGreaterThan(5);expect(JSON.parse(call('doctor').stdout).productionReady).toBe(false);}finally{rmSync(root,{recursive:true});}},10000);
+it('refuses nonprivate state directories instead of trusting self-declared operator',()=>{const root=mkdtempSync(join(tmpdir(),'forge-state-'));try{const unsafe=join(root,'unsafe');mkdirSync(unsafe,{mode:0o755});expect(()=>openLocalRuntime(unsafe,true)).toThrow('0700');}finally{rmSync(root,{recursive:true});}});
