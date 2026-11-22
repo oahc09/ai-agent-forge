@@ -30,6 +30,36 @@ FORGE_TCG_SDK=/absolute/path/to/verified-extracted-debian-sdk sh fixtures/forge-
 
 The script can run only its authored marker and Linux diagnostic; it takes no guest files or commands as input and is not part of Agent Forge's product or automatic test commands. No binaries are distributed in this repository.
 
+## Host budget and cleanup calibration
+
+The same opt-in QEMU command now inherits fixed Linux process limits via
+`prlimit`: soft/hard CPU seconds 30/31, 64 KiB per regular file, 128 open file
+descriptors, and zero core bytes. The existing guest RAM/vCPU bounds, wall
+deadlines and seccomp configuration remain in place. Missing or rejected limit
+tooling fails the run; there is no unrestricted fallback.
+
+For a fixed host-only calibration without QEMU or its SDK:
+
+```sh
+sh fixtures/forge-tcg-inert/probe-resources.sh
+```
+
+The fixture checks exact inherited limits; it tests that the kernel refuses one
+extra byte with EFBIG and one extra file descriptor with EMFILE. CPU and core
+limits are read back, not triggered. A separate fixed process-group case waits
+for its forked child, then the GNU timeout sends SIGTERM to the isolated group.
+The parent receipt requires that the child actually died by SIGTERM and was
+reaped, alongside the watchdog reporting exit 124. Separately, the actual QEMU
+paused guest exits by timeout and releases its PID file. These are controlled
+exact-output checks, not permission to run another program.
+
+These are process-local ceilings; file size is not aggregate disk capacity,
+and guest RAM is not a host memory quota. The test does not establish a process
+count quota, process-tree cleanup after arbitrary group/session changes, escape
+resistance, or guaranteed teardown on host crash. No enforced cgroup or
+multi-tenant isolation is implied. The fixture remains offline and does not
+attempt to run or admit an agent.
+
 ## Before considering real execution
 
 Review a separately scoped launcher with immutable tool/input bindings, independent containment evidence, strict sanitized staging/export, per-run resource budgets, constrained outputs and reliable cleanup. Any real executor or model use needs separate explicit provider/account/model/budget authorization and actual target evidence. Existing two-heterogeneous-adapter and real-task gate requirements remain unchanged. No hosted run, CI dispatch, merge, or external environment transfer is implied by this preflight.

@@ -2,12 +2,15 @@
 # Fixed, opt-in QEMU smoke only. No arbitrary guest, command, provider, or mount input.
 set -eu
 umask 077
+PATH=/usr/bin:/bin
+export PATH
 test "$#" -eq 0 || { echo 'unexpected argument' >&2; exit 2; }
 case "${FORGE_TCG_SDK:-}" in
  /*) ;;
  *) echo 'FORGE_TCG_SDK must be an absolute path to the verified stock package extraction' >&2; exit 2 ;;
 esac
 S=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
+. "$S/resource-guard.sh"
 SDK=$(CDPATH= cd -- "$FORGE_TCG_SDK" && pwd -P)
 Q="$SDK/usr/bin/qemu-system-x86_64"
 L="$SDK/usr/lib/x86_64-linux-gnu"
@@ -39,7 +42,7 @@ sha256sum "$K" "$B" "$Q" host-only-canary linux-initramfs.cpio.gz readonly.img >
 fixed_qemu() {
     duration=$1
     shift
-    timeout -k 2s "$duration" env -i PATH=/usr/bin:/bin LD_LIBRARY_PATH="$L" HOME="$W" LC_ALL=C "$Q" \
+    inert_limits timeout -k 2s "$duration" env -i PATH=/usr/bin:/bin LD_LIBRARY_PATH="$L" HOME="$W" LC_ALL=C "$Q" \
       -machine pc,accel=tcg,usb=off -smp 1 \
       -nodefaults -no-user-config -display none -serial none -parallel none -monitor none -nic none -no-reboot \
       -sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny \
