@@ -1,6 +1,7 @@
 import gzip
 from pathlib import Path
 from stat import S_IFDIR, S_IFREG
+import sys
 
 newc = bytearray()
 def add(name, mode, ino, payload=b""):
@@ -13,5 +14,12 @@ def add(name, mode, ino, payload=b""):
 for index, name in enumerate(("proc", "sys", "dev"), 1):
     add(name, S_IFDIR | 0o755, index)
 add("init", S_IFREG | 0o755, 4, Path("linux-inert").read_bytes())
-add("TRAILER!!!", 0, 5)
-Path("linux-initramfs.cpio.gz").write_bytes(gzip.compress(newc, mtime=0))
+if sys.argv[1:] == ["--fixed-input"]:
+    add("fixed-input", S_IFREG | 0o444, 5, Path("fixed-input").read_bytes())
+    output = "fixed-initramfs.cpio.gz"
+elif not sys.argv[1:]:
+    output = "linux-initramfs.cpio.gz"
+else:
+    raise SystemExit("unexpected argument")
+add("TRAILER!!!", 0, 6)
+Path(output).write_bytes(gzip.compress(newc, mtime=0))

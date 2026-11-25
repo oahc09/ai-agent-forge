@@ -23,9 +23,22 @@ static void print_debug(const char *line) {
     while (*line) outb((unsigned char) *line++, 0xe9);
     outb('\n', 0xe9);
 }
-static void stop(bool pass) {
+static _Noreturn void stop(bool pass) {
     outw(pass ? 0x2a : 0x2b, 0xf4);
     for (;;) pause();
+}
+/* This is a fixed byte transform, not a parser or an executable-input channel. */
+static void run_fixed_input(bool wrong) {
+    unsigned char bytes[59];
+    FILE *input = fopen("/fixed-input", "re");
+    if (!input || fread(bytes, 1, sizeof(bytes), input) != sizeof(bytes) ||
+        fgetc(input) != EOF || ferror(input) || fclose(input) || bytes[56] != '1') {
+        print_debug("FAIL_FIXED_INPUT");
+        stop(false);
+    }
+    bytes[56] = wrong ? '2' : '0';
+    for (size_t i = 0; i < sizeof(bytes); i++) outb(bytes[i], 0xe9);
+    stop(true);
 }
 int main(void) {
     if (ioperm(0xe9, 1, 1) || ioperm(0xf4, 2, 1)) return 1;
@@ -65,6 +78,8 @@ int main(void) {
         print_debug("FAIL_GUEST_UNEXPECTED_ROUTE"); stop(false);
     }
     close(fd);
+    if (strstr(cmdline, "forge.expect=fixed-input ")) run_fixed_input(false);
+    if (strstr(cmdline, "forge.expect=fixed-wrong ")) run_fixed_input(true);
     struct utsname u;
     if (uname(&u) != 0) { print_debug("FAIL_GUEST_KERNEL"); stop(false); }
     print_debug(u.release);

@@ -28,7 +28,7 @@ In a clean checkout:
 FORGE_TCG_SDK=/absolute/path/to/verified-extracted-debian-sdk sh fixtures/forge-tcg-inert/run.sh
 ```
 
-The script can run only its authored marker and Linux diagnostic; it takes no guest files or commands as input and is not part of Agent Forge's product or automatic test commands. No binaries are distributed in this repository.
+The script can run only its authored marker, Linux diagnostic and fixed-input fixture; it takes no guest files or commands as input and is not part of Agent Forge's product or automatic test commands. No binaries are distributed in this repository.
 
 ## Host budget and cleanup calibration
 
@@ -59,6 +59,30 @@ count quota, process-tree cleanup after arbitrary group/session changes, escape
 resistance, or guaranteed teardown on host crash. No enforced cgroup or
 multi-tenant isolation is implied. The fixture remains offline and does not
 attempt to run or admit an agent.
+
+## Fixed-input VM run and independent host acceptance
+
+The same opt-in command now stages one authored 59-byte JSON input as a
+mode-0444 entry in the guest initramfs. The guest opens it read-only and
+changes only byte 56 (zero-based), ASCII `1` to `0`. The guest has no
+expected-output copy, host filesystem share, network interface, or command from
+the caller. A dedicated debug stream carries the raw bytes out; the host
+captures it in an exclusively created file in the private run directory.
+
+| Case | Host requires |
+|---|---|
+| Fixed input | Guest exit 85, no stderr, exact 59 bytes, and SHA-256 `beb0c4159ca575aaba351ffaf25d242a440d786ac83aace939f54263acc40af2` against the independently authored host oracle. |
+| Wrong output | Same exit 85 and byte length, but byte 56 is ASCII `2`; the same host verifier must reject it. |
+| Paused VM | Watchdog exit 124, no guest output, and just the QEMU SIGTERM diagnostic on stderr; the same host verifier must reject it. |
+
+For all three cases the host checks the exact case-directory inventory after the
+watchdog returns (no leftover QEMU PID file), and recomputes the digests of the
+original input, initramfs and other pinned run inputs. The harness prints
+`FIXED_INPUT_HOST_VERIFIED` only after also removing its private run directory
+and verifying the path is gone. QEMU runs in the foreground under the
+bounded watchdog; this does not establish teardown on host crash or cleanup
+of arbitrary escaped processes. The result is one inert task, not a provider
+run, a production executor, or a change to G2 or G8.
 
 ## Before considering real execution
 

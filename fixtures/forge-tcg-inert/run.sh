@@ -93,4 +93,68 @@ test ! -s paused.stdout
 test ! -e paused.pid
 sha256sum --check --status before.sha256
 printf 'paused: host timeout 124, PID file removed\n'
+
+# Host owns the fixture input, output destinations, and independently written oracle.
+# No expected result is put in the guest image and no shared host path is attached.
+printf '%s\n' '{"fixture":"forge-tcg-fixed-offlinev1","networkEnabled":1}' >fixed-input
+chmod 0444 fixed-input
+env -i PATH=/usr/bin:/bin LC_ALL=C python3 -I "$S/build-initramfs.py" --fixed-input
+sha256sum fixed-initramfs.cpio.gz >fixed-before.sha256
+expected_sha=beb0c4159ca575aaba351ffaf25d242a440d786ac83aace939f54263acc40af2
+printf '%s\n' '{"fixture":"forge-tcg-fixed-offlinev1","networkEnabled":0}' >fixed.expected
+printf '%s  %s\n' "$expected_sha" fixed.expected | sha256sum --check --status
+
+verify_fixed() {
+    [ "$1" -eq 85 ] && [ ! -s "$2/stderr" ] &&
+        [ "$(wc -c < "$2/output")" -eq 59 ] &&
+        cmp -s fixed.expected "$2/output" &&
+        printf '%s  %s\n' "$expected_sha" "$2/output" | sha256sum --check --status
+}
+
+for mode in fixed-input fixed-wrong fixed-timeout; do
+    d="case-$mode"
+    mkdir "$d"
+    rc=0
+    duration=35s
+    set --
+    if [ "$mode" = fixed-timeout ]; then duration=2s; set -- -S; fi
+    (
+        set -C
+        fixed_qemu "$duration" -m 192 -kernel "$K" -initrd "$W/fixed-initramfs.cpio.gz" \
+          -append "quiet panic=1 rdinit=/init forge.expect=$mode fixture.end=1" "$@" \
+          -debugcon stdio -device isa-debug-exit,iobase=0xf4,iosize=0x04 \
+          -pidfile "$W/$d/worker.pid" >"$d/output" 2>"$d/stderr"
+    ) || rc=$?
+    # timeout has waited for QEMU; verify no PID file or other exported entry remains.
+    test "$(find "$d" -mindepth 1 -printf '%P:%y\n' | LC_ALL=C sort)" = "$(printf 'output:f\nstderr:f\n')"
+    case "$mode" in
+        fixed-input)
+            verify_fixed "$rc" "$d" || { echo 'fixed input: host verification failed' >&2; exit 1; }
+            ;;
+        fixed-wrong)
+            # Equal-size incorrect result and the same guest success status. Reject on bytes.
+            test "$rc" -eq 85
+            test ! -s "$d/stderr"
+            test "$(wc -c < "$d/output")" -eq 59
+            printf '%s\n' '{"fixture":"forge-tcg-fixed-offlinev1","networkEnabled":2}' | cmp -s - "$d/output"
+            if verify_fixed "$rc" "$d"; then echo 'wrong bytes accepted' >&2; exit 1; fi
+            ;;
+        fixed-timeout)
+            test "$rc" -eq 124
+            test ! -s "$d/output"
+            test "$(wc -l < "$d/stderr")" -eq 1
+            grep -Exq 'qemu-system-x86_64: terminating on signal 15 from pid [1-9][0-9]* \(timeout\)' "$d/stderr"
+            if verify_fixed "$rc" "$d"; then echo 'timeout accepted' >&2; exit 1; fi
+            ;;
+    esac
+    printf '%s  %s\n' 0f5cf5c2c0b05117e94b8eb30ce0e3a38b06f5a720555afda201ac60009b3128 fixed-input |
+        sha256sum --check --status
+    sha256sum --check --status before.sha256 fixed-before.sha256
+    printf '%s: host checked exit %s, output and process artifacts\n' "$mode" "$rc"
+done
+cd /
+rm -rf -- "$W"
+test ! -e "$W" && test ! -L "$W" || { echo 'fixture cleanup failed' >&2; exit 1; }
+trap - EXIT
+printf 'FIXED_INPUT_HOST_VERIFIED output_sha256=%s cleanup=verified\n' "$expected_sha"
 printf 'INERT_TCG_FEASIBLE_ONLY G2=NOT_VERIFIED agent_execution=false\n'
