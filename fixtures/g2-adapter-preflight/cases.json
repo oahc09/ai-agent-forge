@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "id": "g2-adapter-preflight-v1",
+  "status": "planned-not-executed",
+  "originalManifestSha256": "90cf4136531cc4966956cf53ad814380d7cfd47002cbe0edc170fb93ddbe2849",
+  "cases": [
+    {
+      "id": "DOC-01",
+      "category": "documentation",
+      "request": "Document the accepted preset names, the default, and the behavior on an unknown value. Edit README.md only.",
+      "editablePaths": [
+        "README.md"
+      ],
+      "baseline": [
+        {
+          "path": "README.md",
+          "text": "# Preset selector\n\nUsage details are pending.\n",
+          "sha256": "3f74e355ad007edfdb0f16e1639f90a10d376d24a67e1c7066d85cd66f148d77"
+        },
+        {
+          "path": "src/preset.mjs",
+          "text": "export function preset(name = 'balanced') {\n  if (!['fast', 'balanced', 'quiet'].includes(name)) throw new RangeError('unknown preset');\n  return name;\n}\n",
+          "sha256": "1e98d9be1fb69101639a960405652eea0c26037a606f7300898bb021064f5f4d"
+        }
+      ],
+      "hostReview": [
+        "Describe all three names, balanced as default, and RangeError for an unknown value.",
+        "No change to src/preset.mjs."
+      ]
+    },
+    {
+      "id": "DOC-02",
+      "category": "documentation",
+      "request": "Document the migration from interval to intervalMs, precedence, and the default. Edit MIGRATION.md only.",
+      "editablePaths": [
+        "MIGRATION.md"
+      ],
+      "baseline": [
+        {
+          "path": "MIGRATION.md",
+          "text": "# Migration\n\nConfiguration notes are pending.\n",
+          "sha256": "10faadb5a76753b46668896cdcb6cb0e71039045a81cb77f71a93bddc97682a9"
+        },
+        {
+          "path": "src/options.mjs",
+          "text": "export const intervalMs = (options = {}) => options.intervalMs ?? options.interval ?? 1000;\n",
+          "sha256": "df428a97e5692ce6fa561a3081dcb2b505f680c41b3b77468bccb1dcfa8648e2"
+        }
+      ],
+      "hostReview": [
+        "Give a before and after example with the same milliseconds.",
+        "Explain intervalMs takes precedence, interval remains a legacy fallback, and default is 1000 ms."
+      ]
+    },
+    {
+      "id": "TEST-01",
+      "category": "unit-tests",
+      "request": "Add dependency-free node:test coverage for normalizeLabel. Cover blank input, whitespace trimming, and Unicode preservation.",
+      "editablePaths": [
+        "test/label.test.mjs"
+      ],
+      "baseline": [
+        {
+          "path": "src/label.mjs",
+          "text": "export const normalizeLabel = (value) => value.trim() || 'Untitled';\n",
+          "sha256": "6ada2cf372b565a9f5df173dc7062ad01b01ae15835137f9bf85e31e939c8609"
+        }
+      ],
+      "hostReview": [
+        "New tests pass on original source.",
+        "Host checks that tests fail on separate mutants that remove trim, drop the fallback, or discard Unicode."
+      ]
+    },
+    {
+      "id": "TEST-02",
+      "category": "unit-tests",
+      "request": "Add dependency-free node:test coverage for limitRetries at below-zero, in-range, and above-maximum inputs.",
+      "editablePaths": [
+        "test/retries.test.mjs"
+      ],
+      "baseline": [
+        {
+          "path": "src/retries.mjs",
+          "text": "export const limitRetries = (count) => Math.max(0, Math.min(3, count));\n",
+          "sha256": "4bc0f7448c714cd523262846eca5a09d161c5042d235448f8c1324dba116d8fc"
+        }
+      ],
+      "hostReview": [
+        "Tests pass on original source and distinguish separately removing the lower bound, removing the upper bound, and returning a constant."
+      ]
+    },
+    {
+      "id": "BUG-01",
+      "category": "bugfix",
+      "request": "Fix pageCount for partial final pages. Inputs remain nonnegative integer total and positive integer pageSize.",
+      "editablePaths": [
+        "src/pages.mjs"
+      ],
+      "baseline": [
+        {
+          "path": "src/pages.mjs",
+          "text": "export const pageCount = (total, pageSize) => Math.floor(total / pageSize);\n",
+          "sha256": "6a5814ca186327f1ee1f32b85466108267910637a5f23a16a027b945e122a145"
+        }
+      ],
+      "hostReview": [
+        "Host checks zero, exactly full, one-item-over, and a single partial page.",
+        "Only rounding changes; no dependencies."
+      ]
+    },
+    {
+      "id": "BUG-02",
+      "category": "bugfix",
+      "request": "Make displayCount preserve a legitimate numeric zero and use the fallback only for null or undefined.",
+      "editablePaths": [
+        "src/count.mjs"
+      ],
+      "baseline": [
+        {
+          "path": "src/count.mjs",
+          "text": "export const displayCount = (count, fallback = 1) => count || fallback;\n",
+          "sha256": "121dbabacbe53ac92517132a1031f7f2c7e1cee5ff994e455e159cc6f3036c87"
+        }
+      ],
+      "hostReview": [
+        "Host checks zero with a nonzero fallback, null, undefined, and a positive input.",
+        "Keep the existing function signature and default."
+      ]
+    },
+    {
+      "id": "API-01",
+      "category": "adapter-api",
+      "request": "Add a pure adapter from { title, done } to { label, status }. For done=true use complete, otherwise pending. Preserve title unchanged.",
+      "editablePaths": [
+        "src/task-view.mjs"
+      ],
+      "baseline": [
+        {
+          "path": "src/task-view.mjs",
+          "text": "export const taskKind = \"checklist\";\n",
+          "sha256": "1ba9d650ccc327baecf49564653c6bb9c994e5af4cdaf7ef11ed00715bb581ac"
+        }
+      ],
+      "hostReview": [
+        "Export toTaskView(task).",
+        "Return a new object with exactly label and status.",
+        "Host checks frozen inputs and verifies taskKind remains available."
+      ]
+    },
+    {
+      "id": "API-02",
+      "category": "adapter-api",
+      "request": "Add a pure adapter from an integer RGB triple to a lower-case CSS hex string. Each of the three integers is already in 0..255.",
+      "editablePaths": [
+        "src/color.mjs"
+      ],
+      "baseline": [
+        {
+          "path": "src/color.mjs",
+          "text": "export const defaultRgb = Object.freeze([0, 0, 0]);\n",
+          "sha256": "75104bb844213dcaf2cfd98322187a5f0e745d93b549755162c6fa33442f158a"
+        }
+      ],
+      "hostReview": [
+        "Export toCssHex(rgb).",
+        "Host checks zero padding, ordering, lowercase a-f, and frozen input.",
+        "Keep defaultRgb unchanged."
+      ]
+    },
+    {
+      "id": "MULTI-01",
+      "category": "multi-file",
+      "request": "Add support for the compact density in the density list and picker; use gap 4 for compact, and keep roomy as the default with gap 8.",
+      "editablePaths": [
+        "src/densities.mjs",
+        "src/picker.mjs"
+      ],
+      "baseline": [
+        {
+          "path": "src/densities.mjs",
+          "text": "export const densities = ['roomy'];\n",
+          "sha256": "746c7c551b155ffa20179b5c1e164f901c412b7f808409298af01ed9d66a9507"
+        },
+        {
+          "path": "src/picker.mjs",
+          "text": "import { densities } from './densities.mjs';\nexport const gapFor = (name = 'roomy') => densities.includes(name) ? 8 : null;\n",
+          "sha256": "ce48d209f4e0401292c103a2bb2b967c168f903c084280e79b17bc2f68bb364c"
+        }
+      ],
+      "hostReview": [
+        "Both source files change.",
+        "Host checks enumeration, compact, default, explicit roomy, and unknown density."
+      ]
+    },
+    {
+      "id": "MULTI-02",
+      "category": "multi-file",
+      "request": "Add a compact-name formatter using surname, comma and space, given name. Re-export it from the public entry without breaking fullName.",
+      "editablePaths": [
+        "src/format.mjs",
+        "src/index.mjs"
+      ],
+      "baseline": [
+        {
+          "path": "src/format.mjs",
+          "text": "export const fullName = (first, last) => [first, last].join(\" \");\n",
+          "sha256": "c901c9a7dbcfac5ec5cc8ea69e27b39e041cfc192c44b7fb485c00410028032a"
+        },
+        {
+          "path": "src/index.mjs",
+          "text": "export { fullName } from \"./format.mjs\";\n",
+          "sha256": "44d7bff65f3072fe2cb3d5774c6c034816d86e240ad8833cdb4a2372c7a4eaa8"
+        }
+      ],
+      "hostReview": [
+        "Both source files change.",
+        "Host imports compactName and fullName from src/index.mjs, checks order and punctuation and preserves case and Unicode."
+      ]
+    }
+  ]
+}

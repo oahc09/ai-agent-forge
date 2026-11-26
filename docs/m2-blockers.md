@@ -46,3 +46,11 @@ real coding task and separate read-only review were completed in that mode; see
 for development assistance but do not supply a standalone daemon transport, heterogeneous
 executor evidence, or the denied OS isolation. Original G2 remains NOT_PASSED; no new
 provider expense, environment transfer or acceptance-threshold change is inferred.
+
+## Shared ten-case input corpus
+
+The original v1.1 benchmark manifest is restored unchanged. The ten pinned
+public inputs and a single cloud-session DOC-01 host check are documented in
+[G2 real adapter preflight](g2-real-adapter-preflight.md). This advances
+reproducible input and host review preparation, not real adapter availability,
+general OS isolation, or the G2 result.
