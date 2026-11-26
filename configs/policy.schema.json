@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentForge M0 Bootstrap Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "observeOnly",
+    "repository",
+    "provider",
+    "budgetUsd",
+    "networkDomains",
+    "remoteWrite",
+    "merge",
+    "deploy",
+    "maxAttempts",
+    "maxEventHops",
+    "maxConcurrentWorkers"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "observeOnly": {
+      "const": true
+    },
+    "repository": {
+      "type": "string",
+      "pattern": "^https://github\\.com/[A-Za-z0-9][A-Za-z0-9-]*/[A-Za-z0-9_.-]+$(?![\\s\\S])",
+      "not": {
+        "pattern": "/\\.{1,2}$"
+      }
+    },
+    "provider": {
+      "const": "fake"
+    },
+    "budgetUsd": {
+      "const": 0
+    },
+    "networkDomains": {
+      "const": []
+    },
+    "remoteWrite": {
+      "const": false
+    },
+    "merge": {
+      "const": false
+    },
+    "deploy": {
+      "const": false
+    },
+    "maxAttempts": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3
+    },
+    "maxEventHops": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 8
+    },
+    "maxConcurrentWorkers": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3
+    }
+  }
+}

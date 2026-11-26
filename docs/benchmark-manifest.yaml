@@ -1,0 +1,231 @@
+schemaVersion: 2
+name: agent-forge-v1.1-baseline
+status: planned-not-executed
+executionPolicy:
+  offlineByDefault: true
+  defaultAdapter: fake
+  providerRealRequiresExplicitOptIn: true
+  scorerModificationAllowed: false
+  hiddenSetVisibleToCoder: false
+  requireEnvironmentDigest: true
+  requireCommitSha: true
+  requireArtifactHashes: true
+  freezePreregistrationBeforeCandidateEvaluation: true
+  multipleComparisonsMustBeHandled: true
+  recordManualInterventions: true
+  realCampaignMustUseWallClock: true
+  simulationNeverCountsForG8: true
+  independentReviewerRequiredForG8: true
+suites:
+- id: T0-deterministic-v1
+  kind: offline
+  minimumCases: 20
+  cases:
+  - id: RT-01
+    title: valid_event_replay
+  - id: RT-02
+    title: duplicate_event_noop
+  - id: RT-03
+    title: illegal_transition_denied
+  - id: RT-04
+    title: event_commit_atomicity
+  - id: RT-05
+    title: snapshot_replay_equivalence
+  - id: RT-06
+    title: expired_lease_reconciliation
+  - id: RT-07
+    title: zombie_worker_rejected
+  - id: RT-08
+    title: retry_limit_enforced
+  - id: RT-09
+    title: event_hop_fuse
+  - id: RT-10
+    title: approval_wait_no_model_process
+  - id: RT-11
+    title: deny_approval_no_resume
+  - id: RT-12
+    title: task_dependencies_gate
+  - id: RT-13
+    title: cancel_stops_worker
+  - id: RT-14
+    title: budget_limit_zero_billing
+  - id: RT-15
+    title: unauthorized_source_rejected
+  - id: RT-16
+    title: command_allowlist_enforced
+  - id: RT-17
+    title: workspace_path_guard
+  - id: RT-18
+    title: no_duplicate_remote_action
+  - id: RT-19
+    title: cross_repo_context_isolated
+  - id: RT-20
+    title: dry_run_no_side_effects
+- id: T1-agent-adapter-v1
+  kind: offline-plus-opt-in
+  minimumCasesPerAdapter: 10
+  cases:
+  - start
+  - stream
+  - cancel
+  - timeout
+  - error
+  - malformed_event
+  - late_output
+  - checkpoint
+  - resume_or_handoff
+  - capability_report
+- id: T2-autodev-pilot-v1
+  kind: sandbox-real-or-fake
+  minimumCases: 10
+  mix:
+    documentation: 2
+    unit-tests: 2
+    bugfix: 2
+    adapter-api: 2
+    multi-file: 2
+- id: T3-real-project-v1
+  kind: provider-opt-in
+  minimumCases: 30
+  fieldsRequired:
+  - taskId
+  - repoRevision
+  - baselineModel
+  - agentVersion
+  - rubric
+  - trustedValidationCommand
+- id: T4-hidden-holdout-v1
+  kind: independent-validator
+  minimumCases: 20
+  accessibleBy:
+  - trusted-validator
+- id: T5-security-chaos-v1
+  kind: offline-and-sandbox
+  minimumCases: 25
+  categories:
+  - prompt-injection
+  - path-traversal
+  - symlink-escape
+  - unapproved-network
+  - stolen-token
+  - duplicated-trigger
+  - process-kill
+  - database-crash
+  - replay-attack
+  - cost-overrun
+  - evaluator-tamper
+- id: T6-fusion-paired-v1
+  kind: provider-real-with-independent-holdout
+  minimumPairedRealTasks: 100
+  minimumHiddenConfirmationTasks: 20
+  comparison: fusion-vs-best-single-agent
+  controls:
+  - same-model-availability
+  - same-tools
+  - same-per-task-total-budget
+  - fixed-repo-revisions
+  - fixed-agent-versions
+  - same-task-sample
+  strategies:
+  - single
+  - specialist-chain
+  - parallel-review
+  - fallback
+  preregistrationRequired: true
+  positiveClaimRequires: paired-bootstrap-95pct-lower-bound-above-zero-on-preregistered-category
+  noProvenGainOutcome: NOT_PROVEN
+- id: T7-transfer-evolution-v1
+  kind: real-transfer-and-provider-real-independent-eval
+  minimumDistinctUpstreamTransfers: 3
+  minimumPairedRealTasksForEvolutionClaim: 100
+  requiredTransferEvidence:
+  - geneId
+  - sourceRepo
+  - sourceCommit
+  - licenseDecision
+  - adoptedCommit
+  - diff
+  - independentValidationRunId
+  - rollbackPlan
+  evolutionControls:
+  - preregistered-primary-metric
+  - fixed-model-and-tools
+  - same-task-set-and-budget
+  - hidden-confirmation-set
+  - multiple-comparison-correction
+  - candidate-cannot-edit-evaluator
+  unprovenResult: NOT_PROVEN
+- id: T8-autodev-30day-v1
+  kind: real-long-running-authorized-campaign
+  minimumConsecutiveCalendarDays: 30
+  minimumDistinctRealDevelopmentTasks: 30
+  autonomousCompletionMinimumRate: 0.8
+  humanInterventionKinds:
+  - routine-approval
+  - new-stepwise-guidance
+  - manual-code-fix
+  - manual-unblock
+  doesNotCount:
+  - fake
+  - simulation
+  - duplicate-task
+  - unauthorized
+  - trivial-task-splitting
+  - approval-only
+  dailyEvidenceRequired: true
+  failureReconciliationRequired: true
+  minimumEvidenceCoverage: 1.0
+  denominatorEligibility:
+  - authorized
+  - dependency-ready
+  - claimed
+  - real-development-objective
+  - deduplicated
+  numeratorEligibility:
+  - independently-accepted
+  - non-human-assisted
+  - complete-evidence
+  - real-code-diff
+metricDefinitions:
+  autonomousCompletionRate: independently_accepted_tasks / authorized_runnable_tasks
+  firstPassRate: pass_on_first_validation / tasks_first_validated
+  authorizationViolations: count_of_unauthorized_sensitive_side_effects
+  costPerSuccess: total_task_spend / independently_accepted_tasks
+  traceability: validation_runs_with_complete_evidence / validation_runs
+  fusionGainVsBestSingle: paired_success_rate_fusion_minus_best_single_on_preregistered_category
+  distinctUpstreamTransfers: count_validated_transfers_from_unique_source_repositories
+  g8AutonomyRate: independently_accepted_non_human_assisted_real_tasks / deduplicated_authorized_claimed_real_tasks
+  provenEvolutionCount: count_provider_real_improvements_meeting_preregistered_statistics_and_gates
+  manualInterventionCount: count_nonroutine_human_interventions_on_claimed_real_tasks
+acceptanceTargets:
+  securityCriticalViolations: 0
+  traceability: 1.0
+  deterministicRecoveryCasesPassed: 1.0
+  pilotTaskCount: 10
+  pilotAutonomousCompletionMinimum: 8
+  requiredSoakHours: 72
+  g8Required: true
+  g8MinimumConsecutiveCalendarDays: 30
+  g8MinimumDistinctRealTasks: 30
+  g8AutonomousCompletionMinimumRate: 0.8
+  g8MinimumUpstreamProjectCountForTransfers: 3
+  g8MinimumTransferCount: 3
+  g8MinimumProvenEvolutionCount: 1
+  g8MinimumFusionPairedRealTasks: 100
+  g8CriticalSecurityViolations: 0
+  g8ArtifactCoverage: 1.0
+promotion:
+  minimumPairedTasksForAutomaticProposal: 100
+  absoluteSuccessRateLiftPercentagePoints: 5
+  pairedBootstrap95LowerBoundAboveZero: true
+  maxCriticalSliceRegressionPercentagePoints: 2
+  maxCostPerSuccessIncreaseFraction: 0.1
+  requiresHumanReviewForCoreRuntime: true
+  requiresPreregistration: true
+  hiddenHoldoutRequired: true
+  requiresMultipleComparisonControl: true
+  realProviderEvidenceRequiredForProvenGain: true
+  g6IsProcessGateOnly: true
+  g8RequiresAtLeastOneProvenGain: true
+  candidateCannotAccessEvaluatorOrHiddenTasks: true
+planDocument: AgentForge_Development_Plan_v1.1_2026-11-08.md

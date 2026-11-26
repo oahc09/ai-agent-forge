@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "scope": "host-assisted current cloud session; not a Forge adapter run",
+  "caseId": "DOC-01",
+  "corpusSha256": "d79130fdeba29572a18131d0322e430467cdfd314ef3ccf36c570146a18949fc",
+  "baselineFiles": {
+    "README.md": "3f74e355ad007edfdb0f16e1639f90a10d376d24a67e1c7066d85cd66f148d77",
+    "src/preset.mjs": "1e98d9be1fb69101639a960405652eea0c26037a606f7300898bb021064f5f4d"
+  },
+  "candidateFiles": {
+    "README.md": "6472d1ad119f5a98f39c59800815ea86774db5b7258402a3643eb3c676c33d41",
+    "src/preset.mjs": "1e98d9be1fb69101639a960405652eea0c26037a606f7300898bb021064f5f4d"
+  },
+  "changedPaths": [
+    "README.md"
+  ],
+  "baselineRejected": true,
+  "candidateAccepted": true,
+  "candidateCodeExecuted": false,
+  "externalProviderInvoked": false,
+  "cleanupVerified": true,
+  "g2Status": "NOT_VERIFIED",
+  "g8Status": "NOT_VERIFIED"
+}

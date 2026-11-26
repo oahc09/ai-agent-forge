@@ -1,0 +1,46 @@
+[
+  {
+    "repo": "https://github.com/KKKKhazix/agent-autoloop",
+    "commit": "3d0e8353fd9e5e4d3e45b574806ef6fcd41dba45",
+    "license": "MIT",
+    "archived": false,
+    "checkedAt": "2026-11-08",
+    "usage": "design-reference-only",
+    "copiedCode": false,
+    "licenseEvidence": "https://github.com/KKKKhazix/agent-autoloop/blob/3d0e8353fd9e5e4d3e45b574806ef6fcd41dba45/LICENSE",
+    "decision": "Pinned root LICENSE read and confirmed; per-file NOTICE/SBOM review required before copying"
+  },
+  {
+    "repo": "https://github.com/makecindy/cindy",
+    "commit": "4b11aa5de9eed001c501467ea8e0adc8ed8b8a92",
+    "license": "Apache-2.0",
+    "archived": false,
+    "checkedAt": "2026-11-08",
+    "usage": "design-reference-only",
+    "copiedCode": false,
+    "licenseEvidence": "https://github.com/makecindy/cindy/blob/4b11aa5de9eed001c501467ea8e0adc8ed8b8a92/LICENSE",
+    "decision": "Pinned root LICENSE read and confirmed; per-file NOTICE/SBOM review required before copying"
+  },
+  {
+    "repo": "https://github.com/deepseek-ai/dsh-superagent-prototype",
+    "commit": "8c32a9dc5d72c033816c6a8110b37f40cf94fba4",
+    "license": "MIT",
+    "archived": false,
+    "checkedAt": "2026-11-08",
+    "usage": "design-reference-only",
+    "copiedCode": false,
+    "licenseEvidence": "https://github.com/deepseek-ai/dsh-superagent-prototype/blob/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/LICENSE",
+    "decision": "Pinned root LICENSE read and confirmed; per-file NOTICE/SBOM review required before copying"
+  },
+  {
+    "repo": "https://github.com/githubnext/autoloop",
+    "commit": "438782ff81b403989b7be8a04e9d8705b94d038d",
+    "license": "NOASSERTION",
+    "archived": true,
+    "checkedAt": "2026-11-08",
+    "usage": "design-reference-only",
+    "copiedCode": false,
+    "licenseEvidence": "https://github.com/githubnext/autoloop/tree/438782ff81b403989b7be8a04e9d8705b94d038d",
+    "decision": "No license identified: do not copy or redistribute code"
+  }
+]

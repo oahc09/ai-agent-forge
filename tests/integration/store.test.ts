@@ -1,0 +1,21 @@
+import { afterEach, describe, expect, it } from 'vitest';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { EventStore } from '../../packages/event-store/src/index.ts';
+import { makeTask } from '../../packages/domain/src/index.ts';
+const stores:EventStore[]=[];const dirs:string[]=[];
+function open(){const dir=mkdtempSync(join(tmpdir(),'forge-store-'));dirs.push(dir);const s=new EventStore(join(dir,'events.db'));stores.push(s);return s;}
+afterEach(()=>{for(const s of stores.splice(0))s.close();for(const d of dirs.splice(0))rmSync(d,{recursive:true,force:true});});
+const command={taskId:'t',expectedVersion:1,eventType:'task.triaged' as const,payload:{reason:'triage'},actor:'system',idempotencyKey:'triage'};
+const kernel={kind:'kernel' as const};
+describe('transactional event store',()=>{
+ it('uses WAL, migrations, persistent projection, immutable events',()=>{const s=open();s.createTask(makeTask({id:'t',title:'Test',repo:'r'}),'create');expect(s.db.prepare('PRAGMA journal_mode').get()?.journal_mode).toBe('wal');expect(s.db.prepare('SELECT version FROM schema_migrations').get()?.version).toBe(1);expect(()=>s.db.exec("UPDATE events SET actor='x'")).toThrow();expect(()=>s.db.exec('DELETE FROM events')).toThrow('immutable');expect(s.getTask('t')?.version).toBe(1);});
+ it('deduplicates identical commands 100 times and rejects key collisions',()=>{const s=open();s.createTask(makeTask({id:'t',title:'Test',repo:'r'}),'create');for(let i=0;i<100;i++)expect(s.append(command,kernel).version).toBe(2);expect(s.events()).toHaveLength(2);expect(()=>s.append({...command,payload:{reason:'different'}},kernel)).toThrow('Idempotency');expect(()=>s.append({...command,idempotencyKey:'other'},kernel)).toThrow('version');});
+ it('rejects duplicate task ids and creation with pregranted privileges',()=>{const s=open();const t=makeTask({id:'t',title:'Test',repo:'r'});s.createTask(t,'a');expect(()=>s.createTask(t,'b')).toThrow();expect(()=>s.createTask({...t,id:'x',permissions:['merge']},'c')).toThrow();expect(s.events()).toHaveLength(1);});
+ it('makes nested transactions atomic with kernel records',()=>{const s=open();s.db.exec('CREATE TABLE host_records(id TEXT)');expect(()=>s.transaction(()=>{s.db.prepare('INSERT INTO host_records VALUES(?)').run('grant');s.createTask(makeTask({id:'t',title:'Test',repo:'r'}),'create');throw Error('crash');})).toThrow();expect(s.getTask('t')).toBeUndefined();expect(s.events()).toHaveLength(0);expect(s.db.prepare('SELECT count(*) AS n FROM host_records').get()?.n).toBe(0);});
+ it('savepoint rollback preserves outer transaction',()=>{const s=open();s.transaction(()=>{s.createTask(makeTask({id:'t',title:'Test',repo:'r'}),'create');try{s.transaction(()=>{s.append(command,kernel);throw Error('rollback');});}catch{/* outer transaction deliberately continues */}});expect(s.getTask('t')?.status).toBe('DISCOVERED');expect(s.events()).toHaveLength(1);});
+ it('replays exactly 10,000 events and validates snapshots against immutable history',()=>{const s=open();s.transaction(()=>{for(let i=0;i<100;i++){const id=`t${i}`;s.createTask(makeTask({id,title:'Replay',repo:'r'}),`${id}:create`);for(let j=1;j<100;j++){s.append({taskId:id,expectedVersion:j,eventType:'task.evidence_recorded',payload:{evidenceRef:`fixture:${j}`},actor:'system',idempotencyKey:`${id}:${j}`},kernel);if(j===50)s.snapshot(id);}}});expect(s.events()).toHaveLength(10000);const expected=s.listTasks();s.db.exec('DELETE FROM tasks');expect(s.replay()).toEqual(expected);expect(s.replay()).toEqual(expected);},30000);
+ it('returns isolated event/projection copies',()=>{const s=open();s.createTask(makeTask({id:'t',title:'Test',repo:'r'}),'create');const e=s.events()[0]!;e.actor='tampered';const t=s.getTask('t')!;t.title='tampered';expect(s.events()[0]?.actor).toBe('system');expect(s.getTask('t')?.title).toBe('Test');});
+ it('detects snapshot corruption before replacing projection',()=>{const s=open();s.createTask(makeTask({id:'t',title:'Test',repo:'r'}),'create');s.snapshot('t');s.db.exec('DROP TRIGGER snapshots_no_update');s.db.exec("UPDATE snapshots SET digest='bad'");expect(()=>s.replay()).toThrow('Snapshot');expect(s.getTask('t')?.version).toBe(1);});
+});
